@@ -1,0 +1,4 @@
+dapr-dev>=1.14.0rc1.dev3
+flask-dapr==1.12.0
+flask>=3.0.3
+pusher>=3.3.2
