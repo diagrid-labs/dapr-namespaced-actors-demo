@@ -9,16 +9,29 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import configparser
 import datetime
+import os
 
+import pusher
 from dapr.actor import Actor, Remindable
-from demo_actor_interface import DemoActorInterface
+from smartbulb_actor_interface import SmartBulbActorInterface
 from typing import Optional
 
+namespace = os.getenv('NAMESPACE') or 'default'
 
-class DemoActor(Actor, DemoActorInterface, Remindable):
-    """Implements DemoActor actor service
+# Configure the Pusher client
+config = configparser.ConfigParser()
+config.read('config.ini')
+pusher_config = config['pusher']
+pusher_client = pusher.Pusher(app_id=pusher_config.get('app_id'),
+                                    key=pusher_config.get('key'),
+                                    secret=pusher_config.get('secret'),
+                                    cluster=pusher_config.get('cluster'),
+                                    ssl=pusher_config.getboolean('ssl'))
+
+class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
+    """Implements SmartBulbActor actor service
 
     This shows the usage of the below actor features:
 
@@ -29,7 +42,9 @@ class DemoActor(Actor, DemoActorInterface, Remindable):
     """
 
     def __init__(self, ctx, actor_id):
-        super(DemoActor, self).__init__(ctx, actor_id)
+        super(SmartBulbActor, self).__init__(ctx, actor_id)
+
+
 
     async def _on_activate(self) -> None:
         """An callback which will be called whenever actor is activated."""
@@ -47,8 +62,10 @@ class DemoActor(Actor, DemoActorInterface, Remindable):
 
     async def set_my_data(self, data) -> None:
         """An actor method which set mydata state value."""
-        print(f'set_my_data: {data}', flush=True)
-        data['ts'] = datetime.datetime.now(datetime.timezone.utc)
+        namespace = os.getenv('NAMESPACE') or 'default'
+        print(f'set_my_data: {data} in namespace: {namespace}', flush=True)
+        pusher_client.trigger("bla", 'change-status', {"actor_id": self.id.id, "status": data["status"]})
+
         await self._state_manager.set_state('mydata', data)
         await self._state_manager.save_state()
 

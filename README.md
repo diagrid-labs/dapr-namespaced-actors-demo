@@ -1,3 +1,34 @@
+**Client:**
+dapr run --app-id demo-client --placement-host-address=localhost:50006,localhost:50007,localhost:50008 -- python3 app.py
+dapr run --app-id demo-client --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources2 -- flask run --port 5002
+--
+export $NAMESPACE=ns1
+go run -tags=stablecomponents main.go --app-id=democlient1 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --dapr-http-port=3501 --dapr-grpc-port=50001 --metrics-port=9191 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources1
+flask run --port 5001
+-
+export $NAMESPACE=ns2
+go run -tags=stablecomponents main.go --app-id=democlient2 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --dapr-http-port=3502 --dapr-grpc-port=50002 --metrics-port=9192 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources2
+flask run --port 5002
+
+**Server:**
+dapr run --app-id demo-actor --app-port 3000 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 -- uvicorn --port 3000 smartbulb_actor_service:app
+---
+export $NAMESPACE=ns1
+go run -tags=stablecomponents main.go --app-id=demoserver1 --app-port 3001 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --dapr-http-port=3503 --dapr-grpc-port=50003 --metrics-port=9193 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources1
+-
+export $NAMESPACE=ns1
+export DAPR_HTTP_PORT=3503
+uvicorn --port 3001 smartbulb_actor_service:app
+-
+export $NAMESPACE=ns2
+go run -tags=stablecomponents main.go --app-id=demoserver2 --app-port 3002 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --dapr-http-port=3504 --dapr-grpc-port=50004 --metrics-port=9194 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources2
+-
+export $NAMESPACE=ns2
+export DAPR_HTTP_PORT=3504
+uvicorn --port 3002 smartbulb_actor_service:app  
+---
+
+
 # Example - Dapr virtual actors
 
 This document describes how to create an Actor(DemoActor) and invoke its methods on the client application.

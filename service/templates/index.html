@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<script>
+  var namespace = "{{ namespace | safe}}"; // gets the namespace through templating
+
+  Pusher.logToConsole = true;
+
+  var pusher = new Pusher('237f8647f0c132b316e6', {
+    cluster: 'eu'
+  });
+
+  var channel = pusher.subscribe("bla");
+  channel.bind('change-status', function(data) {
+    console.log(data);
+    setLightStatus(data.actor_id, data.status);
+  });
+
+  function setLightStatus(id, status) {
+        const lightbulb = document.getElementById(id);
+        if (status) {
+            lightbulb.classList.add('on');
+            lightbulb.classList.remove('off');
+        } else {
+            lightbulb.classList.add('off');
+            lightbulb.classList.remove('on');
+        }
+    }
+</script>
+<body>
+    <div class="container">
+        <div class="lightbulb {% if status.bulb1 == True %}on{% endif %}" id="bulb1">
+            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <circle class="bulb-outline" cx="32" cy="32" r="30"/>
+                <circle class="bulb-fill" cx="32" cy="32" r="28"/>
+            </svg>
+            <label for="bulb1">Living room</label>
+        </div>
+        <div class="lightbulb {% if status.bulb2 == True %}on{% endif %}" id="bulb2">
+            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <circle class="bulb-outline" cx="32" cy="32" r="30"/>
+                <circle class="bulb-fill" cx="32" cy="32" r="28"/>
+            </svg>
+            <label for="bulb2">Garden</label>
+        </div>
+        <div class="lightbulb {% if status.bulb3 == True %}on{% endif %}" id="bulb3">
+            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <circle class="bulb-outline" cx="32" cy="32" r="30"/>
+                <circle class="bulb-fill" cx="32" cy="32" r="28"/>
+            </svg>
+            <label for="bulb3">Bedroom</label>
+        </div>
+    </div>
+<!--  <div class="container">-->
+<!--        <div class="lightbulb" id="bulb1" onclick="toggleLight('lightbulb1')">-->
+<!--            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">-->
+<!--                <path class="bulb" d="M32 2C18.745 2 8 12.745 8 26c0 7.926 4.619 14.787 11.357 18.143L20 48h24l.643-3.857C51.381 40.787 56 33.926 56 26 56 12.745 45.255 2 32 2zm0 56v4m-4-4h8m-5-2h2" />-->
+<!--            </svg>-->
+<!--        </div>-->
+<!--        <div class="lightbulb" id="bulb2" onclick="toggleLight('lightbulb2')">-->
+<!--            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">-->
+<!--                <path class="bulb" d="M32 2C18.745 2 8 12.745 8 26c0 7.926 4.619 14.787 11.357 18.143L20 48h24l.643-3.857C51.381 40.787 56 33.926 56 26 56 12.745 45.255 2 32 2zm0 56v4m-4-4h8m-5-2h2" />-->
+<!--            </svg>-->
+<!--        </div>-->
+<!--        <div class="lightbulb" id="bulb3" onclick="toggleLight('lightbulb3')">-->
+<!--            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">-->
+<!--                <path class="bulb" d="M32 2C18.745 2 8 12.745 8 26c0 7.926 4.619 14.787 11.357 18.143L20 48h24l.643-3.857C51.381 40.787 56 33.926 56 26 56 12.745 45.255 2 32 2zm0 56v4m-4-4h8m-5-2h2" />-->
+<!--            </svg>-->
+<!--        </div>-->
+<!--    </div>-->
+</body>
+</html>

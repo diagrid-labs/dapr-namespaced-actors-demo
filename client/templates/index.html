@@ -6,15 +6,16 @@
   <title>Checkbox Slider Example</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
   <style>
-    .container {
+    .container-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
-    .box {
+    .container {
       width: 300px;
-      text-align: center;
+    }
+    .box {
       padding: 20px;
     }
     .checkbox-slider {
@@ -22,6 +23,7 @@
       display: inline-block;
       width: 60px;
       height: 34px;
+      margin-right: 10px;
     }
     .checkbox-slider input {
       opacity: 0;
@@ -51,10 +53,18 @@
       border-radius: 50%;
     }
     input:checked + .slider {
-      background-color: #4CAF50;
+      background-color: #2196F3; /* Blue color */
     }
     input:checked + .slider:before {
       transform: translateX(26px);
+    }
+    .field {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .field label {
+      margin-left: 10px;
     }
   </style>
   <script>
@@ -86,29 +96,31 @@
   </script>
 </head>
 <body>
-  <div class="container">
-    <div class="box">
-      <h1 class="title">Select a Bulb</h1>
-      <div class="field">
-        <label class="checkbox-slider">
-          <input type="checkbox" id="bulb1">
-          <span class="slider"></span>
-        </label>
-        <label for="bulb1">Living room (1)</label>
-      </div>
-      <div class="field">
-        <label class="checkbox-slider">
-          <input type="checkbox" id="bulb2">
-          <span class="slider"></span>
-        </label>
-        <label for="bulb2">Garden (2)</label>
-      </div>
-      <div class="field">
-        <label class="checkbox-slider">
-          <input type="checkbox" id="bulb3">
-          <span class="slider"></span>
-        </label>
-        <label for="bulb3">Bedroom (3)</label>
+  <div class="container-wrapper">
+    <div class="container">
+      <div class="box">
+        <h1 class="title">Control your lights</h1>
+        <div class="field">
+          <label class="checkbox-slider">
+            <input type="checkbox" id="bulb1">
+            <span class="slider"></span>
+          </label>
+          <label for="bulb1">Living room</label>
+        </div>
+        <div class="field">
+          <label class="checkbox-slider">
+            <input type="checkbox" id="bulb2">
+            <span class="slider"></span>
+          </label>
+          <label for="bulb2">Garden</label>
+        </div>
+        <div class="field">
+          <label class="checkbox-slider">
+            <input type="checkbox" id="bulb3">
+            <span class="slider"></span>
+          </label>
+          <label for="bulb3">Bedroom</label>
+        </div>
       </div>
     </div>
   </div>

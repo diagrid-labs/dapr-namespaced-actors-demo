@@ -1,0 +1,54 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    flex-direction: column;
+}
+
+h1, p {
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.lightbulb {
+    text-align: center;
+    cursor: pointer;
+}
+
+.lightbulb svg {
+    width: 100px;
+    height: 100px;
+}
+
+.bulb-outline {
+    fill: none;
+    stroke: #333;  /* Dark grey outline */
+    stroke-width: 4;
+}
+
+.bulb-fill {
+    fill: none;
+    stroke: none;
+}
+
+.on .bulb-fill {
+    fill: #ffd700;  /* Soft yellow color */
+}
+
+.off .bulb-fill {
+    fill: none;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+}
