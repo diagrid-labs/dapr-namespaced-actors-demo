@@ -24,11 +24,11 @@ namespace = os.getenv('NAMESPACE') or 'default'
 config = configparser.ConfigParser()
 config.read('config.ini')
 pusher_config = config['pusher']
-pusher_client = pusher.Pusher(app_id=pusher_config.get('app_id'),
-                                    key=pusher_config.get('key'),
-                                    secret=pusher_config.get('secret'),
-                                    cluster=pusher_config.get('cluster'),
-                                    ssl=pusher_config.getboolean('ssl'))
+pusher_client = pusher.Pusher(app_id=pusher_config.get('app_id'), key=pusher_config.get('key'),
+                              secret=pusher_config.get('secret'),
+                              cluster=pusher_config.get('cluster'),
+                              ssl=pusher_config.getboolean('ssl'))
+
 
 class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
     """Implements SmartBulbActor actor service
@@ -43,8 +43,6 @@ class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
 
     def __init__(self, ctx, actor_id):
         super(SmartBulbActor, self).__init__(ctx, actor_id)
-
-
 
     async def _on_activate(self) -> None:
         """An callback which will be called whenever actor is activated."""
@@ -64,7 +62,8 @@ class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
         """An actor method which set mydata state value."""
         namespace = os.getenv('NAMESPACE') or 'default'
         print(f'set_my_data: {data} in namespace: {namespace}', flush=True)
-        pusher_client.trigger("bla", 'change-status', {"actor_id": self.id.id, "status": data["status"]})
+        pusher_client.trigger("bla", 'change-status',
+                              {"actor_id": self.id.id, "status": data["status"]})
 
         await self._state_manager.set_state('mydata', data)
         await self._state_manager.save_state()
@@ -83,14 +82,12 @@ class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
         print(f'set reminder to {enabled}', flush=True)
         if enabled:
             # Register 'demo_reminder' reminder and call receive_reminder method
-            await self.register_reminder(
-                'demo_reminder',  # reminder name
+            await self.register_reminder('demo_reminder',  # reminder name
                 b'reminder_state',  # user_state (bytes)
                 # The amount of time to delay before firing the reminder
-                datetime.timedelta(seconds=5),
-                datetime.timedelta(seconds=5),  # The time interval between firing of reminders
-                datetime.timedelta(seconds=5),
-            )
+                datetime.timedelta(seconds=5), datetime.timedelta(seconds=5),
+                # The time interval between firing of reminders
+                datetime.timedelta(seconds=5), )
         else:
             # Unregister 'demo_reminder'
             await self.unregister_reminder('demo_reminder')
@@ -105,15 +102,13 @@ class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
         print(f'set_timer to {enabled}', flush=True)
         if enabled:
             # Register 'demo_timer' timer and call timer_callback method
-            await self.register_timer(
-                'demo_timer',  # timer name
+            await self.register_timer('demo_timer',  # timer name
                 self.timer_callback,  # Callback method
                 'timer_state',  # Parameter to pass to the callback method
                 # Amount of time to delay before the callback is invoked
-                datetime.timedelta(seconds=5),
-                datetime.timedelta(seconds=5),  # Time interval between invocations
-                datetime.timedelta(seconds=5),
-            )
+                datetime.timedelta(seconds=5), datetime.timedelta(seconds=5),
+                # Time interval between invocations
+                datetime.timedelta(seconds=5), )
         else:
             # Unregister 'demo_timer'
             await self.unregister_timer('demo_timer')
@@ -127,14 +122,8 @@ class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
         """
         print(f'time_callback is called - {state}', flush=True)
 
-    async def receive_reminder(
-        self,
-        name: str,
-        state: bytes,
-        due_time: datetime.timedelta,
-        period: datetime.timedelta,
-        ttl: Optional[datetime.timedelta] = None,
-    ) -> None:
+    async def receive_reminder(self, name: str, state: bytes, due_time: datetime.timedelta,
+            period: datetime.timedelta, ttl: Optional[datetime.timedelta] = None, ) -> None:
         """A callback which will be called when reminder is triggered."""
         print(f'receive_reminder is called - {name} reminder - {str(state)}', flush=True)
 

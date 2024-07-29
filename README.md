@@ -1,31 +1,99 @@
-**Client:**
-dapr run --app-id demo-client --placement-host-address=localhost:50006,localhost:50007,localhost:50008 -- python3 app.py
-dapr run --app-id demo-client --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources2 -- flask run --port 5002
+
+
+# K8s
+
+Install Dapr
+```commandline
+dapr init -k --runtime-version 1.14.0-rc.7
+```
+
+Create namespace:
+```bash
+kubectl create namespace ns1
+kubectl create namespace ns2
+```
+
+Build app images and load them in a Kind cluster
+```bash
+cd client
+docker build -t demoactor-client:latest .
+
+cd ../server
+docker build -t demoactor-server:latest .
+
+kind load docker-image demoactor-client:latest demoactor-server:latest
+```
+Install Redis:
+```bash
+helm install redis bitnami/redis
+```
+Create a secret with the password:
+
+```bash
+kubectl create secret generic redis-secret -n=ns1 --from-literal=redis-password=$(kubectl get secret --namespace default redis -o jsonpath="{.data.redis-password}" | base64 -d)
+kubectl create secret generic redis-secret -n=ns2 --from-literal=redis-password=$(kubectl get secret --namespace default redis -o jsonpath="{.data.redis-password}" | base64 -d)
+```
+
+Deploy the apps:
+```bash
+kubectl apply -f deploy/redis.yml
+kubectl apply -f deploy/demo_actor_client.yml -n ns1
+kubectl apply -f deploy/demo_actor_client.yml -n ns2
+kubectl apply -f deploy/demo_actor_service.yml -n ns1
+kubectl apply -f deploy/demo_actor_service.yml -n ns2
+```
+
+Port forward:
+```bash
+kubectl port-forward svc/demoactor-client-app-service 3001:3000 -n ns1 # Client ns1
+kubectl port-forward svc/demoactor-client-app-service 3002:3000 -n ns2 # Client ns2
+kubectl port-forward svc/demoactor-server-app-service 4001:5000 -n ns1 # Server ns1
+kubectl port-forward svc/demoactor-server-app-service 4002:5000 -n ns2 # Server ns2
+```
+
+
+
+
+
+
+
+## Client
+dapr run --app-id demo-client --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources1 -- python3 app.py
+dapr run --app-id demo-client --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources2 -- ... não sei
 --
+##### Dapr Client 1
 export $NAMESPACE=ns1
 go run -tags=stablecomponents main.go --app-id=democlient1 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --dapr-http-port=3501 --dapr-grpc-port=50001 --metrics-port=9191 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources1
-flask run --port 5001
--
+##### App Client 1
+export $NAMESPACE=ns1
+export DAPR_GRPC_PORT=50001 
+flask run --port 3000
+##### Dapr Client 2
 export $NAMESPACE=ns2
 go run -tags=stablecomponents main.go --app-id=democlient2 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --dapr-http-port=3502 --dapr-grpc-port=50002 --metrics-port=9192 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources2
-flask run --port 5002
+##### App Client 2
+export $NAMESPACE=ns2
+export DAPR_GRPC_PORT=50002
+flask run --port 3001
 
 **Server:**
-dapr run --app-id demo-actor --app-port 3000 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 -- uvicorn --port 3000 smartbulb_actor_service:app
----
+dapr run --app-id demo-actor --app-port 3000 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources1 -- uvicorn --port 3000 smartbulb_actor_service:app
+##### Dapr Server 1
 export $NAMESPACE=ns1
-go run -tags=stablecomponents main.go --app-id=demoserver1 --app-port 3001 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --dapr-http-port=3503 --dapr-grpc-port=50003 --metrics-port=9193 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources1
--
+go run -tags=stablecomponents main.go --app-id=demoserver1 --app-port 3002 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --dapr-http-port=3503 --dapr-grpc-port=50003 --metrics-port=9193 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources1
+##### App Server 1
 export $NAMESPACE=ns1
 export DAPR_HTTP_PORT=3503
-uvicorn --port 3001 smartbulb_actor_service:app
--
+export DAPR_GRPC_PORT=50003 
+uvicorn --port 3002 smartbulb_actor_service:app
+##### Dapr Server 2
 export $NAMESPACE=ns2
-go run -tags=stablecomponents main.go --app-id=demoserver2 --app-port 3002 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --dapr-http-port=3504 --dapr-grpc-port=50004 --metrics-port=9194 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources2
--
+go run -tags=stablecomponents main.go --app-id=demoserver2 --app-port 3003 --placement-host-address=localhost:50006,localhost:50007,localhost:50008 --dapr-http-port=3504 --dapr-grpc-port=50004 --metrics-port=9194 --resources-path=/Users/elenakolevska/Diagrid/Code/demo_ns_actors/resources2
+##### App Server 1
 export $NAMESPACE=ns2
 export DAPR_HTTP_PORT=3504
-uvicorn --port 3002 smartbulb_actor_service:app  
+export DAPR_GRPC_PORT=50004
+uvicorn --port 3003 smartbulb_actor_service:app  
 ---
 
 
