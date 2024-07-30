@@ -5,6 +5,8 @@
 - [Kind cluster](https://kind.sigs.k8s.io/docs/user/quick-start/)
 
 ### Setting up
+Copy the `service.ini.example` file to `service.ini` and fill in the values for your [Pusher](https://www.pusher.com) account.
+
 Run the setup script:
 ```bash
 ./setup.sh
