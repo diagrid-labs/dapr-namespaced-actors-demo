@@ -69,59 +69,59 @@ class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
         await self._state_manager.save_state()
 
 
-    # async def set_reminder(self, enabled) -> None:
-    #     """Enables and disables a reminder.
+    async def set_reminder(self, enabled) -> None:
+        """Enables and disables a reminder.
+
+        Args:
+            enabled (bool): the flag to enable and disable smartbulb_reminder.
+        """
+        print(f'set reminder to {enabled}', flush=True)
+        if enabled:
+            # Register 'smartbulb_reminder' reminder and call receive_reminder method
+            await self.register_reminder('smartbulb_reminder',  # reminder name
+                b'reminder_state',  # user_state (bytes)
+                # The amount of time to delay before firing the reminder
+                datetime.timedelta(seconds=5), datetime.timedelta(seconds=5),
+                # The time interval between firing of reminders
+                datetime.timedelta(seconds=5), )
+        else:
+            # Unregister 'smartbulb_reminder'
+            await self.unregister_reminder('smartbulb_reminder')
+        print('set reminder is done', flush=True)
+
+    async def set_timer(self, enabled) -> None:
+        """Enables and disables a timer.
+
+        Args:
+            enabled (bool): the flag to enable and disable smartbulb_timer.
+        """
+        print(f'set_timer to {enabled}', flush=True)
+        if enabled:
+            # Register 'smartbulb_timer' timer and call timer_callback method
+            await self.register_timer('smartbulb_timer',  # timer name
+                self.timer_callback,  # Callback method
+                'timer_state',  # Parameter to pass to the callback method
+                # Amount of time to delay before the callback is invoked
+                datetime.timedelta(seconds=5), datetime.timedelta(seconds=5),
+                # Time interval between invocations
+                datetime.timedelta(seconds=5), )
+        else:
+            # Unregister 'smartbulb_timer'
+            await self.unregister_timer('smartbulb_timer')
+        print('set_timer is done', flush=True)
+
+    async def timer_callback(self, state) -> None:
+        """A callback which will be called whenever timer is triggered.
+
+        Args:
+            state (object): an object which is defined when timer is registered.
+        """
+        print(f'time_callback is called - {state}', flush=True)
     #
-    #     Args:
-    #         enabled (bool): the flag to enable and disable demo_reminder.
-    #     """
-    #     print(f'set reminder to {enabled}', flush=True)
-    #     if enabled:
-    #         # Register 'demo_reminder' reminder and call receive_reminder method
-    #         await self.register_reminder('demo_reminder',  # reminder name
-    #             b'reminder_state',  # user_state (bytes)
-    #             # The amount of time to delay before firing the reminder
-    #             datetime.timedelta(seconds=5), datetime.timedelta(seconds=5),
-    #             # The time interval between firing of reminders
-    #             datetime.timedelta(seconds=5), )
-    #     else:
-    #         # Unregister 'demo_reminder'
-    #         await self.unregister_reminder('demo_reminder')
-    #     print('set reminder is done', flush=True)
-    #
-    # async def set_timer(self, enabled) -> None:
-    #     """Enables and disables a timer.
-    #
-    #     Args:
-    #         enabled (bool): the flag to enable and disable demo_timer.
-    #     """
-    #     print(f'set_timer to {enabled}', flush=True)
-    #     if enabled:
-    #         # Register 'demo_timer' timer and call timer_callback method
-    #         await self.register_timer('demo_timer',  # timer name
-    #             self.timer_callback,  # Callback method
-    #             'timer_state',  # Parameter to pass to the callback method
-    #             # Amount of time to delay before the callback is invoked
-    #             datetime.timedelta(seconds=5), datetime.timedelta(seconds=5),
-    #             # Time interval between invocations
-    #             datetime.timedelta(seconds=5), )
-    #     else:
-    #         # Unregister 'demo_timer'
-    #         await self.unregister_timer('demo_timer')
-    #     print('set_timer is done', flush=True)
-    #
-    # async def timer_callback(self, state) -> None:
-    #     """A callback which will be called whenever timer is triggered.
-    #
-    #     Args:
-    #         state (object): an object which is defined when timer is registered.
-    #     """
-    #     print(f'time_callback is called - {state}', flush=True)
-    #
-    # async def receive_reminder(self, name: str, state: bytes, due_time: datetime.timedelta,
-    #         period: datetime.timedelta, ttl: Optional[datetime.timedelta] = None, ) -> None:
-    #     """A callback which will be called when reminder is triggered."""
-    #     print(f'receive_reminder is called - {name} reminder - {str(state)}', flush=True)
+    async def receive_reminder(self, name: str, state: bytes, due_time: datetime.timedelta,
+            period: datetime.timedelta, ttl: Optional[datetime.timedelta] = None, ) -> None:
+        """A callback which will be called when reminder is triggered."""
+        print(f'receive_reminder is called - {name} reminder - {str(state)}', flush=True)
 
     async def get_reentrancy_status(self) -> bool:
         """For Testing Only: An actor method which gets reentrancy status."""

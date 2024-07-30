@@ -21,6 +21,12 @@ set -e
 if echo "$DAPR_STATUS" | grep -q "No status returned. Is Dapr initialized in your cluster?"; then
   echo "Dapr is not installed. Installing Dapr..."
   dapr init -k --runtime-version 1.14.0-rc.7
+   # Wait for all pods in the dapr-system namespace to be ready
+  echo "Waiting for Dapr pods to be ready..."
+  while [[ $(kubectl get pods -n dapr-system -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}' | grep -c "True" | wc -l) -ne $(kubectl get pods -n dapr-system --no-headers | wc -l) ]]; do
+    echo "Waiting for Dapr pods to be ready..."
+    sleep 2
+  done
 else
   echo "Dapr is already installed"
 fi
