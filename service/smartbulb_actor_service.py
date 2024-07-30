@@ -51,12 +51,7 @@ async def startup_event():
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     namespace = os.getenv('NAMESPACE') or 'default'
-    print(f'-----------------------namespace: {namespace}', flush=True)
-
     factory = ActorProxyFactory()
-    proxy = ActorProxy.create('SmartBulbActor', ActorId("bulb1"), SmartBulbActorInterface, factory)
-
-    rtn_obj = await proxy.GetMyData()
 
     status = {}
     for id in ["bulb1", "bulb2", "bulb3"]:
@@ -64,13 +59,7 @@ async def read_root(request: Request):
         rtn_obj = await proxy.GetMyData()
         status[id] = rtn_obj.get("status", False) if rtn_obj else False
 
-
-    # status = {"bulb1": True, "bulb2": False, "bulb3": True}
-
-
-    # return templates.TemplateResponse(request=request, name="index.html", context={"namespace": namespace})
     return templates.TemplateResponse("index.html", {"request": request,
                                                      "title": f"{SmartBulbActor.__name__}Service - {namespace}",
                                                      "namespace": namespace,
                                                      "status": status})
-

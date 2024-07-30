@@ -24,6 +24,7 @@
 # asyncio.run(main())
 
 import asyncio
+import os
 
 from dapr.actor import ActorProxyFactory, ActorProxy, ActorId
 from flask import Flask, render_template, request, jsonify
@@ -34,8 +35,17 @@ app = Flask(__name__)
 
 
 @app.route("/")
-def hello():
-    return render_template('index.html')
+def home():
+    namespace = os.getenv('NAMESPACE') or 'default'
+    factory = ActorProxyFactory()
+
+    status = {}
+    for id in ["bulb1", "bulb2", "bulb3"]:
+        proxy = ActorProxy.create('SmartBulbActor', ActorId(id), SmartBulbActorInterface, factory)
+        rtn_obj = asyncio.run(proxy.GetMyData())
+        status[id] = rtn_obj.get("status", False) if rtn_obj else False
+
+    return render_template('index.html', namespace=namespace, status=status, title=f"Client app - {namespace}")
 
 
 @app.route('/update_bulb', methods=['POST'])

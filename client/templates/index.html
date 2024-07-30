@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkbox Slider Example</title>
+  <title>{{ title }}</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
   <style>
     .container-wrapper {
@@ -99,24 +99,24 @@
   <div class="container-wrapper">
     <div class="container">
       <div class="box">
-        <h1 class="title">Control your lights</h1>
+        <h1 class="title">Control your lights in "{{namespace}}"</h1>
         <div class="field">
           <label class="checkbox-slider">
-            <input type="checkbox" id="bulb1">
+            <input type="checkbox" id="bulb1" {% if status.bulb1 %}checked{% endif %}>
             <span class="slider"></span>
           </label>
           <label for="bulb1">Living room</label>
         </div>
         <div class="field">
           <label class="checkbox-slider">
-            <input type="checkbox" id="bulb2">
+            <input type="checkbox" id="bulb2" {% if status.bulb2 %}checked{% endif %}>
             <span class="slider"></span>
           </label>
           <label for="bulb2">Garden</label>
         </div>
         <div class="field">
           <label class="checkbox-slider">
-            <input type="checkbox" id="bulb3">
+            <input type="checkbox" id="bulb3" {% if status.bulb3 %}checked{% endif %}>
             <span class="slider"></span>
           </label>
           <label for="bulb3">Bedroom</label>

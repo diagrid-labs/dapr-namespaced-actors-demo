@@ -16,7 +16,7 @@
     cluster: 'eu'
   });
 
-  var channel = pusher.subscribe("bla");
+  var channel = pusher.subscribe(namespace);
   channel.bind('change-status', function(data) {
     console.log(data);
     setLightStatus(data.actor_id, data.status);
@@ -34,6 +34,7 @@
     }
 </script>
 <body>
+    <div class="namespace-title">{{ namespace }}</div>
     <div class="container">
         <div class="lightbulb {% if status.bulb1 == True %}on{% endif %}" id="bulb1">
             <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">

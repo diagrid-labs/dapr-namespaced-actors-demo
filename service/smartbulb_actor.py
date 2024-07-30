@@ -62,7 +62,7 @@ class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
         """An actor method which set mydata state value."""
         namespace = os.getenv('NAMESPACE') or 'default'
         print(f'set_my_data: {data} in namespace: {namespace}', flush=True)
-        pusher_client.trigger("bla", 'change-status',
+        pusher_client.trigger(namespace, 'change-status',
                               {"actor_id": self.id.id, "status": data["status"]})
 
         await self._state_manager.set_state('mydata', data)
