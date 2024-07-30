@@ -1,16 +1,28 @@
 #!/bin/bash
 
 # Exit on error
+
+## Install Dapr
+#echo "Installing Dapr..."
+## Check if Dapr is installed
+#if dapr --version > /dev/null 2>&1; then
+#  echo "Dapr is already installed"
+#else
+#  echo "Installing Dapr..."
+#  dapr init -k --runtime-version 1.13.5
+##  dapr init -k --runtime-version 1.14.0-rc.7
+#fi
+
+echo "Checking Dapr status in the cluster..."
+DAPR_STATUS=$(dapr status -k 2>&1)
+
 set -e
 
-# Install Dapr
-echo "Installing Dapr..."
-# Check if Dapr is installed
-if dapr --version > /dev/null 2>&1; then
-  echo "Dapr is already installed"
-else
-  echo "Installing Dapr..."
+if echo "$DAPR_STATUS" | grep -q "No status returned. Is Dapr initialized in your cluster?"; then
+  echo "Dapr is not installed. Installing Dapr..."
   dapr init -k --runtime-version 1.14.0-rc.7
+else
+  echo "Dapr is already installed"
 fi
 
 # Default context
@@ -65,6 +77,9 @@ done
 echo "Deploying the apps..."
 kubectl apply -f deploy/ns1.yml
 kubectl apply -f deploy/ns2.yml
+
+kubectl rollout restart deployment -n ns1
+kubectl rollout restart deployment -n ns2
 
 # Print instructions in green
 GREEN='\033[0;32m'

@@ -26,10 +26,6 @@ class SmartBulbActorInterface(ActorInterface):
     async def set_my_data(self, data: object) -> None:
         ...
 
-    # @abstractmethod
-    # @actormethod(name='ClearMyData')
-    # async def clear_my_data(self) -> None:
-    #     ...
     #
     # @abstractmethod
     # @actormethod(name='SetReminder')
