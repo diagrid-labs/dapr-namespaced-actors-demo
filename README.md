@@ -5,6 +5,7 @@
 ### Install requirements
 - [Dapr CLI](https://docs.dapr.io/getting-started)
 - [Kind cluster](https://kind.sigs.k8s.io/docs/user/quick-start/)
+- A free [Pusher](https://www.pusher.com) account
 
 ### Setting up
 Copy the `service.ini.example` file to `service.ini` and fill in the values for your [Pusher](https://www.pusher.com) account.
