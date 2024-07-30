@@ -27,7 +27,7 @@ spec:
         app: demoactor-client
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/app-id: "demoactor-client"
+        dapr.io/app-id: "demoactor-client-ns2"
         dapr.io/app-port: "3000"
     spec:
       containers:
@@ -73,7 +73,7 @@ spec:
         app: demoactor-server
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/app-id: "demoactor-server"
+        dapr.io/app-id: "demoactor-server-ns2"
         dapr.io/app-port: "5000"
     spec:
       containers:

@@ -117,7 +117,7 @@ class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
             state (object): an object which is defined when timer is registered.
         """
         print(f'time_callback is called - {state}', flush=True)
-    #
+
     async def receive_reminder(self, name: str, state: bytes, due_time: datetime.timedelta,
             period: datetime.timedelta, ttl: Optional[datetime.timedelta] = None, ) -> None:
         """A callback which will be called when reminder is triggered."""
