@@ -1,5 +1,7 @@
 # Dapr namespaced actors demo
 
+![](demo.gif)
+
 ### Install requirements
 - [Dapr CLI](https://docs.dapr.io/getting-started)
 - [Kind cluster](https://kind.sigs.k8s.io/docs/user/quick-start/)
