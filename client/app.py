@@ -17,7 +17,7 @@ def home():
     status = {}
     for id in ["bulb1", "bulb2", "bulb3"]:
         proxy = ActorProxy.create('SmartBulbActor', ActorId(id), SmartBulbActorInterface, factory)
-        rtn_obj = asyncio.run(proxy.GetMyData())
+        rtn_obj = asyncio.run(proxy.GetStatus())
         status[id] = rtn_obj.get("status", False) if rtn_obj else False
 
     return render_template('index.html', namespace=namespace, status=status, title=f"Client app - {namespace}")

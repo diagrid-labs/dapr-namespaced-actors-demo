@@ -56,7 +56,7 @@ async def read_root(request: Request):
     status = {}
     for id in ["bulb1", "bulb2", "bulb3"]:
         proxy = ActorProxy.create('SmartBulbActor', ActorId(id), SmartBulbActorInterface, factory)
-        rtn_obj = await proxy.GetMyData()
+        rtn_obj = await proxy.GetStatus()
         status[id] = rtn_obj.get("status", False) if rtn_obj else False
 
     return templates.TemplateResponse("index.html", {"request": request,

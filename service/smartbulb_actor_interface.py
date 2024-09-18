@@ -17,8 +17,8 @@ from dapr.actor import ActorInterface, actormethod
 
 class SmartBulbActorInterface(ActorInterface):
     @abstractmethod
-    @actormethod(name='GetMyData')
-    async def get_my_data(self) -> object:
+    @actormethod(name='GetStatus')
+    async def get_status(self) -> object:
         ...
 
     @abstractmethod

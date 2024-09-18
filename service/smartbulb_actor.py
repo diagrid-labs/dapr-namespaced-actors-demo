@@ -51,7 +51,7 @@ class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
         """An callback which will be called whenever actor is deactivated."""
         print(f'Deactivate {self.__class__.__name__} actor!', flush=True)
 
-    async def get_my_data(self) -> object:
+    async def get_status(self) -> object:
         """An actor method which gets mydata state value."""
         has_value, val = await self._state_manager.try_get_state('mydata')
         print(f'has_value: {has_value}', flush=True)
