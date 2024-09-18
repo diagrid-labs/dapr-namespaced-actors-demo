@@ -28,12 +28,13 @@ def update_bulb():
     data = request.json
     bulb_id = data['bulb_id']
     status = data['status']
+
     print(f"Bulb {bulb_id} is now {'on' if status else 'off'}")
 
     factory = ActorProxyFactory()
     proxy = ActorProxy.create('SmartBulbActor', ActorId(bulb_id), SmartBulbActorInterface, factory)
 
-    rtn_obj = asyncio.run(proxy.SetMyData({'status': status}))
+    rtn_obj = asyncio.run(proxy.SetStatus({'status': status}))
     print(rtn_obj, flush=True)
 
     return jsonify(success=True)

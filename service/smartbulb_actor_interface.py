@@ -22,8 +22,8 @@ class SmartBulbActorInterface(ActorInterface):
         ...
 
     @abstractmethod
-    @actormethod(name='SetMyData')
-    async def set_my_data(self, data: object) -> None:
+    @actormethod(name='SetStatus')
+    async def set_status(self, data: object) -> None:
         ...
 
     @abstractmethod

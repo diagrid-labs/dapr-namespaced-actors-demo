@@ -18,13 +18,12 @@ from dapr.actor import Actor, Remindable
 from smartbulb_actor_interface import SmartBulbActorInterface
 from typing import Optional
 
-namespace = os.getenv('NAMESPACE') or 'default'
-
 # Configure the Pusher client
 config = configparser.ConfigParser()
 config.read('config.ini')
 pusher_config = config['pusher']
-pusher_client = pusher.Pusher(app_id=pusher_config.get('app_id'), key=pusher_config.get('key'),
+pusher_client = pusher.Pusher(app_id=pusher_config.get('app_id'),
+                              key=pusher_config.get('key'),
                               secret=pusher_config.get('secret'),
                               cluster=pusher_config.get('cluster'),
                               ssl=pusher_config.getboolean('ssl'))
@@ -58,10 +57,10 @@ class SmartBulbActor(Actor, SmartBulbActorInterface, Remindable):
         print(f'has_value: {has_value}', flush=True)
         return val
 
-    async def set_my_data(self, data) -> None:
+    async def set_status(self, data) -> None:
         """An actor method which set mydata state value."""
         namespace = os.getenv('NAMESPACE') or 'default'
-        print(f'set_my_data: {data} in namespace: {namespace}', flush=True)
+        print(f'set_status: {data} in namespace: {namespace}', flush=True)
         pusher_client.trigger(namespace, 'change-status',
                               {"actor_id": self.id.id, "status": data["status"]})
 

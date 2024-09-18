@@ -1,18 +1,5 @@
 #!/bin/bash
 
-# Exit on error
-
-## Install Dapr
-#echo "Installing Dapr..."
-## Check if Dapr is installed
-#if dapr --version > /dev/null 2>&1; then
-#  echo "Dapr is already installed"
-#else
-#  echo "Installing Dapr..."
-#  dapr init -k --runtime-version 1.13.5
-##  dapr init -k --runtime-version 1.14.0-rc.7
-#fi
-
 echo "Checking Dapr status in the cluster..."
 DAPR_STATUS=$(dapr status -k 2>&1)
 
@@ -20,7 +7,7 @@ set -e
 
 if echo "$DAPR_STATUS" | grep -q "No status returned. Is Dapr initialized in your cluster?"; then
   echo "Dapr is not installed. Installing Dapr..."
-  dapr init -k --runtime-version 1.14.0-rc.7
+  dapr init -k --enable-ha --runtime-version 1.14.4
    # Wait for all pods in the dapr-system namespace to be ready
   echo "Waiting for Dapr pods to be ready..."
   while [[ $(kubectl get pods -n dapr-system -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}' | grep -o "True" | wc -l) -ne $(kubectl get pods -n dapr-system --no-headers | wc -l) ]]; do
@@ -57,7 +44,6 @@ docker build -t demoactor-client:latest -f client/Dockerfile client
 docker build -t demoactor-server:latest -f service/Dockerfile service
 kind load docker-image demoactor-client:latest
 kind load docker-image demoactor-server:latest
-
 
 
 # Install Redis
